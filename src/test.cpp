@@ -3,14 +3,14 @@
 
 int main()
 {
-    ThreadPool pool{5};
+    static ThreadPool pool{5};
 
     static std::mutex mutex;
 
     for (int n{1}; n <= 5; n++)
     {
         pool.enqueue([n](std::mutex& mutex) {
-            for (int i{0}; i < 10; i++)
+            for (int i{0}; i < 1000; i++)
             {
                 std::unique_lock<std::mutex> lock(mutex);
                 std::cout << "Thread " << n << " active (" << i << ")" << std::endl;
