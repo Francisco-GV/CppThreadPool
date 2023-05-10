@@ -17,7 +17,7 @@ public:
         using returnType = decltype(func(args...));
 
         auto task = std::make_shared<std::packaged_task<returnType()>>(
-            std::bind(std::forward<Func>(func), std::forward<Args>(args...))
+            std::bind(std::forward<Func>(func), std::forward<Args>(args)...)
         );
 
         std::future<returnType> result = task->get_future();

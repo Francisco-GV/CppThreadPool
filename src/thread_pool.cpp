@@ -32,7 +32,7 @@ void ThreadPool::workerThread()
         {
             std::unique_lock<std::mutex> lock(queue_mutex);
 
-            condition.wait(lock, [this] { stop || !tasks.empty();});
+            condition.wait(lock, [this] { return stop || !tasks.empty();});
 
             if (stop && tasks.empty())
             {
