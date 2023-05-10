@@ -5,17 +5,26 @@ int main()
 {
     ThreadPool pool{5};
 
+    static std::mutex mutex;
+
     for (int n{1}; n <= 5; n++)
     {
-        pool.enqueue([n]() {
+        pool.enqueue([n](std::mutex& mutex) {
             for (int i{0}; i < 10; i++)
             {
-                std::cout << "Thread " << n << " active (" << n << ")\n";
+                std::unique_lock<std::mutex> lock(mutex);
+                std::cout << "Thread " << n << " active (" << i << ")" << std::endl;
             }
 
-            std::cout << "thread " << n << " ended.\n"; 
-    });
+            {
+                std::unique_lock<std::mutex> lock(mutex);
+                std::cout << "thread " << n << " ended." << std::endl;
+            }
+        }, std::ref(mutex));
     }
 
-    std::cout << "Main thread ended.\n"; 
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        std::cout << "Main thread ended.\n"; 
+    }
 }
